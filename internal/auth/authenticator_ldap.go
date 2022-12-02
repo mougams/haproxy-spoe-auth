@@ -18,6 +18,7 @@ type LDAPConnectionDetails struct {
 	Password   string
 	BaseDN     string
 	UserFilter string
+	UserGroupFilter string
 }
 
 // LDAPAuthenticator is the LDAP implementation of the Authenticator interface
@@ -32,7 +33,7 @@ func NewLDAPAuthenticator(options LDAPConnectionDetails) *LDAPAuthenticator {
 	}
 }
 
-func verifyCredentials(ldapDetails *LDAPConnectionDetails, username, password string) error {
+func verifyCredentials(ldapDetails *LDAPConnectionDetails, username, password, group string) error {
 	l, err := ldap.Dial("tcp", fmt.Sprintf("%s:%d", ldapDetails.Hostname, ldapDetails.Port))
 	if err != nil {
 		return err
@@ -45,11 +46,20 @@ func verifyCredentials(ldapDetails *LDAPConnectionDetails, username, password st
 		return err
 	}
 
+	is_check_group := false
+	search_filter := ldapDetails.UserFilter
+	if ldapDetails.UserGroupFilter != "" {
+		is_check_group = true
+		search_filter = ldapDetails.UserGroupFilter
+	}
+	if group == "" && is_check_group {
+		return ErrMissingGroup
+	}
 	// Search for the given username
 	searchRequest := ldap.NewSearchRequest(
 		ldapDetails.BaseDN,
 		ldap.ScopeWholeSubtree, ldap.NeverDerefAliases, 1, 0, false,
-		strings.Replace(ldapDetails.UserFilter, "{login}", username, 1),
+		strings.Replace(strings.Replace(search_filter, "{login}", username, 1), "{group}", group, 1),
 		[]string{"dn"},
 		nil,
 	)
@@ -100,6 +110,7 @@ func parseBasicAuth(auth string) (username, password string, err error) {
 // Authenticate handle an authentication request coming from HAProxy
 func (la *LDAPAuthenticator) Authenticate(msg *spoe.Message) (bool, []spoe.Action, error) {
 	var authorization string
+	var group string
 
 	for msg.Args.Next() {
 		arg := msg.Args.Arg
@@ -110,6 +121,12 @@ func (la *LDAPAuthenticator) Authenticate(msg *spoe.Message) (bool, []spoe.Actio
 			if !ok {
 				return false, nil, nil
 			}
+		} else if arg.Name == "authorized_group" {
+			var ok bool
+			group, ok = arg.Value.(string)
+			if !ok {
+				group = ""
+			}
 		}
 	}
 
@@ -118,13 +135,17 @@ func (la *LDAPAuthenticator) Authenticate(msg *spoe.Message) (bool, []spoe.Actio
 		return false, nil, nil
 	}
 
+	if group == "" {
+		logrus.Debug("Group header is empty")
+	}
+
 	username, password, err := parseBasicAuth(authorization)
 
 	if err != nil {
 		return false, nil, fmt.Errorf("unable to parse basic auth header")
 	}
 
-	err = verifyCredentials(&la.connectionDetails, username, password)
+	err = verifyCredentials(&la.connectionDetails, username, password, group)
 
 	if err != nil {
 		if err == ErrUserDoesntExist {

@@ -6,8 +6,10 @@ services:
       - ./resources/haproxy:/usr/local/etc/haproxy:ro
     ports:
       - "9080:9080"
+      - "9081:9081"
     depends_on:
-      - spoe
+      - spoe1
+      - spoe2
       - dex
       - protected-backend
       - unprotected-backend
@@ -39,14 +41,33 @@ services:
     networks:
       haproxy-spoe-net:
 
-  spoe:
+  spoe1:
     build: .
     volumes:
       - .:/app
       - ./resources/scripts:/scripts
       - ./resources/configuration:/configuration
     working_dir: /app
-    command: /scripts/run.sh
+    command: /scripts/run.sh -c /configuration/config.yml
+    security_opt:
+      - seccomp:unconfined
+      - apparmor:unconfined
+    cap_add:
+      - SYS_PTRACE
+    depends_on:
+      - ldap
+      - dex
+    networks:
+      haproxy-spoe-net:
+
+  spoe2:
+    build: .
+    volumes:
+      - .:/app
+      - ./resources/scripts:/scripts
+      - ./resources/configuration:/configuration
+    working_dir: /app
+    command: /scripts/run.sh -c /configuration/config2.yml
     security_opt:
       - seccomp:unconfined
       - apparmor:unconfined

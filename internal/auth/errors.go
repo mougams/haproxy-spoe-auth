@@ -13,6 +13,9 @@ var ErrBadAuthorizationValue = errors.New("bad authorization value provided")
 // ErrWrongCredentials error thrown when credentials provided by user are wrong
 var ErrWrongCredentials = errors.New("wrong credentials")
 
+// ErrMissingGroup error thrown when no group has been specified in the request
+var ErrMissingGroup = errors.New("no group specified")
+
 // ErrUserDoesntExist error thrown when provided user does not exist
 var ErrUserDoesntExist = errors.New("user does not exist")
 

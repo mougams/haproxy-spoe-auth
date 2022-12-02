@@ -51,6 +51,7 @@ func main() {
 			Password:   viper.GetString("ldap.password"),
 			BaseDN:     viper.GetString("ldap.base_dn"),
 			UserFilter: viper.GetString("ldap.user_filter"),
+			UserGroupFilter: viper.GetString("ldap.user_group_filter"),
 		})
 		authenticators["try-auth-ldap"] = ldapAuthentifier
 	}

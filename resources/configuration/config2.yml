@@ -1,0 +1,20 @@
+server:
+  # The address the server will listen on
+  addr: :8082
+  # The verbosity of the logs: info or debug
+  log_level: debug
+
+# If set, the LDAP authenticator is enabled
+ldap:
+  # The hostname an port to the ldap server
+  hostname: ldap
+  port: 389
+  # The DN and password of the user to bind with in order to perform the search query to find the user
+  user_dn: cn=admin,dc=example,dc=com
+  password: password
+  # The base DN used for the search queries 
+  base_dn: dc=example,dc=com
+  # The filter for the query searching for the user provided
+  user_filter: "(cn={login})"
+  # The filter for the query searching for the user and group provided
+  user_group_filter: "(&(cn={login})(ou:dn:={group}))"
