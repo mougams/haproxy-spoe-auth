@@ -1,3 +1,4 @@
+//go:build release
 // +build release
 
 package server
@@ -8,7 +9,7 @@ import (
 
 	"github.com/rakyll/statik/fs"
 
-	_ "github.com/aestek/consul-timeline/server/public" // TODO: Replace with the absolute import path
+	_ "github.com/shimmerglass/consul-timeline/server/public" // TODO: Replace with the absolute import path
 )
 
 func (s *Server) serveStatic() {

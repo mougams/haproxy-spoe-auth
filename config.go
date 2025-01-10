@@ -9,11 +9,11 @@ import (
 
 	"github.com/ghodss/yaml"
 
-	"github.com/aestek/consul-timeline/consul"
-	"github.com/aestek/consul-timeline/server"
-	cass "github.com/aestek/consul-timeline/storage/cassandra"
-	"github.com/aestek/consul-timeline/storage/memory"
-	"github.com/aestek/consul-timeline/storage/mysql"
+	"github.com/shimmerglass/consul-timeline/consul"
+	"github.com/shimmerglass/consul-timeline/server"
+	cass "github.com/shimmerglass/consul-timeline/storage/cassandra"
+	"github.com/shimmerglass/consul-timeline/storage/memory"
+	"github.com/shimmerglass/consul-timeline/storage/mysql"
 )
 
 type Config struct {

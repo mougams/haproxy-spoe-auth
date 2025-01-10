@@ -3,11 +3,11 @@ package cass
 import (
 	"time"
 
-	tl "github.com/aestek/consul-timeline/timeline"
 	"github.com/gocql/gocql"
 	"github.com/pkg/errors"
 	"github.com/scylladb/gocqlx"
 	"github.com/scylladb/gocqlx/qb"
+	tl "github.com/shimmerglass/consul-timeline/timeline"
 )
 
 type idxService struct {

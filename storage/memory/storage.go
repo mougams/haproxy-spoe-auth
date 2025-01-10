@@ -3,8 +3,8 @@ package memory
 import (
 	"context"
 
-	"github.com/aestek/consul-timeline/storage"
-	tl "github.com/aestek/consul-timeline/timeline"
+	"github.com/shimmerglass/consul-timeline/storage"
+	tl "github.com/shimmerglass/consul-timeline/timeline"
 )
 
 type Storage struct {

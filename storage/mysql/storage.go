@@ -6,10 +6,10 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/aestek/consul-timeline/storage"
-	tl "github.com/aestek/consul-timeline/timeline"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/pkg/errors"
+	"github.com/shimmerglass/consul-timeline/storage"
+	tl "github.com/shimmerglass/consul-timeline/timeline"
 	log "github.com/sirupsen/logrus"
 )
 
